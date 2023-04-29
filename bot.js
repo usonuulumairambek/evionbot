@@ -2,26 +2,64 @@ const Telegraf = require('telegraf');
 const Markup = require('telegraf/markup');
 require('dotenv').config();
 let text = require('./const');
-const bot = new Telegraf('6270357584:AAHL9PZd-Cw_sSk6RotC8IFtaPcV-n5WNJg');
+const bot = new Telegraf('6270357584:AAEgY1D5Rt3sdOZQ2mtsrIhVuLzhXPd1pdg');
+
 
 bot.command('start', (ctx) => {
   ctx.reply('Здравствуйте! Я — бот EVION. Чем я могу быть полезен?', {
-    reply_markup: Markup.keyboard([
-      ['Показать локации', 'О компании'],
-      ['Режим работы', 'Контакты'],
-      ['Открой сайт'],
-    ]),
+    reply_markup: {
+      inline_keyboard: [
+          /* Inline buttons. 2 side-by-side */
+          [ { text: "Локации", callback_data: "btn-1" }, { text: "Контакты", callback_data: "btn-2" } ],
+
+          /* One button */
+          [ { text: "Время работы", callback_data: "next" } ],
+          
+          /* Also, we can have URL buttons. */
+          [ { text: "Открыть сайт", url: "https://evion.kg/" } ]
+      ]
+  }
   });
 });
+
+bot.command(['location'], (ctx) => {
+  ctx.reply('Выберите локации:', {
+    reply_markup: Markup.keyboard([
+      ['Анкара 16/1', 'БЦ 79', 'Ауэзова, 24'],
+      ['Назад ◀️', 'Еще станции ⏩'],
+    ]).resize(),
+  });
+});
+
+bot.hears('Еще станции ⏩', (ууу) => {
+  ууу.reply('Выберите локации:', {
+    reply_markup: Markup.keyboard([
+      ['Чуй проспект 150А', '4-мкрн', 'в процессе'],
+      ['Назад ◀️', 'Еще станции ⏩'],
+    ]).resize(),
+  });
+});
+bot.hears('Еще станции ⏩', (ууу) => {
+  ууу.reply('Выберите локации:', {
+    reply_markup: Markup.keyboard([
+      ['Анкара 16/1', 'БЦ 79', 'Ауэзова, 24'],
+      ['Назад ◀️', 'Еще станции ⏩'],
+    ]).resize(),
+  });
+});
+
+bot.hears(/^(location|Назад ◀️)$/i, (qwqw) => {
+
+});
+
 
 bot.hears('Показать локации', (context) => {
   function sendLocation1() {
     context.replyWithLocation(42.856217583032894, 74.66961079120061);
-
     context.reply(`Станция "Анкара 16/1"`);
   }
   sendLocation1(context);
- 
+
   function sendLocation2() {
     context.replyWithLocation(42.87432241708925, 74.59200306315996);
 
